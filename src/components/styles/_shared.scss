@@ -1,0 +1,36 @@
+@import '_variables.scss';
+@import '_mixins.scss';
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+#flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 10em;
+
+    @include sm{
+        padding: 1em;
+    }
+}
+
+#loading-spinner{
+    color: $spinner-color;
+    font-size: 4em;
+    position: relative;
+    top: -3em;
+}
+
+.ant-form {
+    padding: 2em;
+    box-shadow: 10px 10px 0px rgb(24, 144, 255);
+
+    @include sm{
+        box-shadow: none;
+        padding: 0;
+    }
+}

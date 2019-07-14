@@ -1,0 +1,9 @@
+@import '_variables.scss';
+@import '_shared.scss';
+
+#form{
+    /* max-width instead of width so that the browser can
+     * shorten the width of the fields as it sees fit.
+     * This ensures more responsiveness */
+    max-width: 30em;
+}

@@ -1,0 +1,21 @@
+/* Variables go in here for global usage within all .sass files.
+ * To do that we have to add 
+ *
+ * @import '_variables.sass'
+ *
+ * In every .sass file in which we want to use the variables.
+ *
+ * Variables have the form $variable: value */
+ 
+$spinner-color: #1890ff;
+// Small tablets and large smartphones (landscape view)
+$screen-sm: 640px;
+
+// Small tablets (portrait view)
+$screen-md: 768px;
+
+// Tablets and small desktops
+$screen-lg: 992px;
+
+// Large tablets and desktops
+$screen-xl: 1200px;
