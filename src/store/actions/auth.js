@@ -27,9 +27,8 @@ export const logout = () => {
     return {
         type: actionTypes.AUTH_LOGOUT
     }
-
-
 }
+
 
 export const checkAuthTimeout = expirationTime => {
     return dispatch => {
@@ -55,7 +54,7 @@ export const authLogin = (username, password) => {
             dispatch(checkAuthTimeout(3600));
 
         })
-        .catch(err =>{
+        .catch(err => {
             dispatch(authFail(err));
         })
     }
@@ -80,7 +79,7 @@ export const authLogin = (username, password) => {
                 dispatch(checkAuthTimeout(3600));
     
             })
-            .catch(err =>{
+            .catch(err => {
                 dispatch(authFail(err));
             })
         }
@@ -101,5 +100,46 @@ export const authLogin = (username, password) => {
                     dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000))
                 }
              }
+        }
+    }
+
+
+
+
+    export const resAddStart = () => {
+        return {
+            type: actionTypes.RES_ADD_START
+        }
+    }
+
+    export const resAddSuccess = () => {
+        return {
+            type: actionTypes.RES_ADD_SUCCESS
+        }
+    }
+
+    export const resAddFail = error => {
+        return {
+            type: actionTypes.RES_ADD_FAIL,
+            error: error
+        }
+    }
+
+
+    export const addRes = (title, url, note, tags) => {
+        return dispatch => {
+            dispatch(resAddStart());
+            return axios.post('http://127.0.0.1:8000/api/res/add', {
+                title:title,
+                url:url,
+                note:note,
+                tags:tags
+            })
+            .then(res => {
+                dispatch(resAddSuccess());
+            })
+            .catch(err => {
+                dispatch(resAddFail());
+            })
         }
     }

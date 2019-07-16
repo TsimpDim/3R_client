@@ -1,33 +1,25 @@
 import React, { Component } from 'react'
-import { Icon, Button, Form, Modal, Input } from 'antd';
+import { Button } from 'antd'
 import { Redirect } from 'react-router-dom'
 import './styles/Home.scss'
-import TextArea from 'antd/lib/input/TextArea';
+import ResAddModal from './ResAddModal'
 
 export default class Home extends Component {
 
-    state = { 
-        visible: false,
-        confirmLoading: false,
-    };
+    constructor(props) {
+        super(props);
 
-    showAddResMod = () => {
-        this.setState({ visible:true });
+        this.state = {
+            resAddModalVisible: false
+        }
+
+        this.toggleModalVisible = this.toggleModalVisible.bind(this);
     }
 
-    handleOkResMod = () => {
-        this.setState({
-            confirmLoading:true
-        });
-
-        
-    }
-    
-    handleCancelResMod = () => {
-        this.setState({
-            visible:false,
-            confirmLoading:false,
-        });
+    toggleModalVisible() {
+        this.setState(state => ({
+            resAddModalVisible: !state.resAddModalVisible
+        }));
     }
 
     render() {
@@ -36,7 +28,7 @@ export default class Home extends Component {
                 <Redirect push to={{
                         pathname:'/login',
                         state:"redir"
-                        }} 
+                    }} 
                 />
             );
         else
@@ -44,41 +36,18 @@ export default class Home extends Component {
                 <div style={{display:"flex column", padding:"2em"}}>
                     <div className="flex-row">
                         <Button
-                            shape="round"
                             size="large"
                             icon="plus-circle"
                             type="primary"
                             style={{backgroundColor: "#52c41a", border:"none"}}
-                            onClick={this.showAddResMod}                            
+                            onClick={() => this.setState({resAddModalVisible:true})}
                         >
                             Add Resource
                         </Button>
 
-
-                        <Modal
-                            title="Add Resource"
-                            visible={this.state.visible}
-                            onOk={this.handleOkResMod}
-                            onCancel={this.handleCancelResMod}
-                            width={800}
-                            confirmLoading={this.state.confirmLoading}
-                        >
-
-                            <Form>
-                                <Form.Item>
-                                    <Input name="title" prefix={<Icon type="info" />} placeholder="Title"/>
-                                </Form.Item>
-                                <Form.Item>
-                                    <Input name="link" prefix={<Icon type="link" />} placeholder="Url"/>
-                                </Form.Item>
-                                <Form.Item>
-                                    <TextArea name="note" prefix={<Icon type="snippets" />} placeholder="Note"/>
-                                </Form.Item>
-                                <Form.Item>
-                                    <Input name="note" prefix={<Icon type="tag" />} placeholder="Tags"/>
-                                </Form.Item>                                                              
-                            </Form>
-                        </Modal>
+                        <ResAddModal
+                        visible={this.state.resAddModalVisible}
+                        toggleVisible={this.toggleModalVisible}/>
                     </div>
                 </div>
             )
