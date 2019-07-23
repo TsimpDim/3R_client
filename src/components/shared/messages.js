@@ -20,3 +20,7 @@ export const succ_logout = () => {
 export const must_auth = () => {
     message.warning("You must be logged in to access this page");
 };
+
+export const succ_res_add = () => {
+    message.success("Resource added");
+};

@@ -1,8 +1,9 @@
 import React from 'react'
 import TextArea from 'antd/lib/input/TextArea'
-import { Icon, Form, Modal, Input, Tooltip } from 'antd'
+import { Icon, Form, Modal, Input, Tooltip, Button } from 'antd'
 import * as actions from '../store/actions/resources'
 import { connect } from 'react-redux'
+import { succ_res_add } from './shared/messages'
 
 class ResAddModal extends React.Component {
 
@@ -28,23 +29,47 @@ class ResAddModal extends React.Component {
         this.setState({ visible:true });
     }
 
-    handleOkResMod = () => {
+    // Returns true if resource was added or false otherwise.
+    // That way "addNext" knows whether to clear the fields or not
+    handleOkResMod = (addNext) => {
         this.setState({
             confirmLoading:true
         });
         
         this.props.form.validateFields(err => {
-            if(err)
+            if(err){
                 this.setState({ confirmLoading:false });
+            }
             else{
                 this.props.addResource(this.state.title, this.state.url, this.state.note, this.state.tags).then(res => {
                
+                    // Stop showing the loading icon
                     this.setState({
                         confirmLoading:false
                     });
+
+                    // Flash success message
+                    succ_res_add();
+
+                    // If addNext is not true that means that
+                    // we want to close the dialog.
+                    // We don't use 'if(!addNext)' to avoid unecessary
+                    // complexity for the null/undefined values.
+                    if(addNext !== true)
+                        this.props.toggleVisible();
+                    
+                    // We always want to reset the fields since
+                    // otherwise when we re-opened the form we would
+                    // see the previous values
+                    this.props.form.resetFields();
                 });
+
             }
         });
+    };
+
+    handleAddNext = () => {
+        this.handleOkResMod(true);
     }
     
     handleCancelResMod = () => {
@@ -66,6 +91,19 @@ class ResAddModal extends React.Component {
                 onCancel={this.handleCancelResMod}
                 width={800}
                 confirmLoading={this.state.confirmLoading}
+                footer={[
+                    <Button key="return" onClick={this.handleCancel}>
+                        Return
+                    </Button>
+                    ,
+                    <Button key="add-next" loading={this.state.confirmLoading} onClick={this.handleAddNext}>
+                        Add Next
+                    </Button>
+                    ,
+                    <Button key="add" type="primary" loading={this.state.confirmLoading} onClick={this.handleOkResMod}>
+                        Add
+                    </Button>
+                ]}
             >
 
                 <Form>
