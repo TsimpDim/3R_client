@@ -1,5 +1,7 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from './actionTypes'
 import axios from 'axios'
+
+/* AUTHENTICATION */
 
 export const authStart = () => {
     return {
@@ -38,12 +40,14 @@ export const checkAuthTimeout = expirationTime => {
     }
 }
 
-export const authLogin = (username, password) => {
+export const authLogin = (username, password, cancelToken) => {
     return dispatch => {
         dispatch(authStart());
         return axios.post('http://127.0.0.1:8000/api/auth/login/', {
             username: username,
-            password: password
+            password: password,
+        },{
+            cancelToken: cancelToken
         })
         .then(res =>{
             const token = res.data.key;
@@ -52,10 +56,12 @@ export const authLogin = (username, password) => {
             localStorage.setItem('expirationDate',expirationDate);
             dispatch(authSuccess(token));
             dispatch(checkAuthTimeout(3600));
-
         })
         .catch(err => {
-            dispatch(authFail(err));
+            if(axios.isCancel(err))
+                console.log('Call aborted');
+            else
+                dispatch(authFail(err));
         })
     }
 
@@ -104,7 +110,7 @@ export const authLogin = (username, password) => {
     }
 
 
-
+/* RESOURCES */
 
     export const resAddStart = () => {
         return {
@@ -128,18 +134,15 @@ export const authLogin = (username, password) => {
 
     export const addRes = (title, url, note, tags) => {
         return dispatch => {
-            dispatch(resAddStart());
-            return axios.post('http://127.0.0.1:8000/api/res/add', {
+            return axios.post('http://localhost:8000/api/resources/', {
                 title:title,
                 url:url,
-                note:note,
-                tags:tags
-            })
-            .then(res => {
-                dispatch(resAddSuccess());
-            })
-            .catch(err => {
-                dispatch(resAddFail());
+                note:(!note ? undefined : note), // Do not send if empty
+                tags:(tags ? tags.split(',') : undefined), // Split into array first (see model)
+            },{
+                headers:{
+                    "Authorization": "Token " + localStorage.getItem('token'),
+                }
             })
         }
     }

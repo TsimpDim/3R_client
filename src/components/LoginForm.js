@@ -1,15 +1,17 @@
 import React from 'react'
 import {
     Form, Icon, Input, Button,
-} from 'antd';
-import { Link, Redirect } from "react-router-dom";
-import { connect } from 'react-redux';
-import * as actions from '../store/actions/auth';
-import './styles/LoginForm.scss';
-import { ntwrk_err, succ_login, must_auth } from './shared/messages';
-
+} from 'antd'
+import { Redirect, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import * as actions from '../store/actions/auth'
+import './styles/LoginForm.scss'
+import { ntwrk_err, succ_login, must_auth } from './shared/messages'
+import axios from 'axios'
 
 class NormalLoginForm extends React.Component {
+
+    signal = axios.CancelToken.source();
 
     constructor(props) {
         super(props);
@@ -34,14 +36,18 @@ class NormalLoginForm extends React.Component {
             must_auth();
     }
 
+    componentWillUnmount(){
+        this.signal.cancel('Call is being cancelled');
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         this.setState({loading : true});
 
         this.props.form.validateFields((err) => {
             if(!err)
-                this.props.onAuth(this.state.username, this.state.password).then(res => {
-                    this.setState({loading : false}); // Added on top to prevent componentWillUnmount errors
+                this.props.onAuth(this.state.username, this.state.password, this.signal.token).then(res => {
+                    // this.setState({loading : false});
 
                     if(this.props.isAuthenticated){
                         this.props.history.push('/', {
@@ -147,7 +153,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: (username,password) => dispatch(actions.authLogin(username,password))
+        onAuth: (username,password,cancelToken) => dispatch(actions.authLogin(username,password,cancelToken))
     }
 }
 

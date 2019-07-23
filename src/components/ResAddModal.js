@@ -11,7 +11,13 @@ class ResAddModal extends React.Component {
 
         this.state = { 
             confirmLoading: false,
+            title: '',
+            url: '',
+            note: '',
+            tags: '',
         };
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(event) {
@@ -26,9 +32,18 @@ class ResAddModal extends React.Component {
         this.setState({
             confirmLoading:true
         });
+        
         this.props.form.validateFields(err => {
             if(err)
                 this.setState({ confirmLoading:false });
+            else{
+                this.props.addResource(this.state.title, this.state.url, this.state.note, this.state.tags).then(res => {
+               
+                    this.setState({
+                        confirmLoading:false
+                    });
+                });
+            }
         });
     }
     
@@ -70,7 +85,8 @@ class ResAddModal extends React.Component {
                         })(
                             <Input 
                             name="title"
-                            prefix={<Icon type="info" onChange={this.handleChange}/>}
+                            prefix={<Icon type="info" />}
+                            onChange={this.handleChange}
                             placeholder="Title"
                             suffix={
                                 <Tooltip title="Allowed: English, Greek, underscore(_) and space">
@@ -82,19 +98,19 @@ class ResAddModal extends React.Component {
                     </Form.Item>
 
                     <Form.Item>
-                        {getFieldDecorator('link', {
+                        {getFieldDecorator('url', {
                             rules: [{
                                 required: true,
                                 whitespace: true,
                                 message: "*Field is required. ",
                             },{
-                                pattern: "(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})",
+                                pattern: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/,
                                 message: "*URL is in improper form."
                             },{
                                 max: 200,
                                 message: "*URL exceeds character limit."
                             }],
-                        })(<Input name="link" prefix={<Icon type="link" onChange={this.handleChange}/>} placeholder="Url"/>)}
+                        })(<Input name="url" prefix={<Icon type="link" />} onChange={this.handleChange} placeholder="Url"/>)}
                     </Form.Item>
 
                     <Form.Item>
@@ -103,7 +119,7 @@ class ResAddModal extends React.Component {
                                 max: 300,
                                 message: "*Note exceeds character limit."
                             }]
-                        })(<TextArea name="note" prefix={<Icon type="snippets" onChange={this.handleChange}/>} placeholder="Note"/>)}
+                        })(<TextArea name="note" prefix={<Icon type="snippets" />} onChange={this.handleChange} placeholder="Note"/>)}
                     </Form.Item>
 
                     <Form.Item>
@@ -112,16 +128,14 @@ class ResAddModal extends React.Component {
                                 pattern: "^[a-zA-Z\u0370-\u03ff\u1f00-\u1fff,_]*$",
                                 message: "*Tags are in improper form - read the tip."
                             },{
-                                pattern: "^[A-Za-z0-9_ \u0370-\u03ff\u1f00-\u1fff]*$",
-                                message: "*Tags contain invalid characters."
-                            },{
                                 max: 60,
                                 message: "*Tags exceed character limit."
                             }]
                         })(
                             <Input
                             name="tags"
-                            prefix={<Icon type="tag" onChange={this.handleChange}/>}
+                            prefix={<Icon type="tag" />}
+                            onChange={this.handleChange}
                             placeholder="Tags"
                             suffix={
                                 <Tooltip title="Allowed: English, Greek and underscore(_). Separate with commas(,)">
@@ -148,7 +162,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addRes: (title, url, note, tags) => dispatch(actions.addRes(title, url, note, tags)),
+        addResource: (title, url, note, tags) => dispatch(actions.addRes(title, url, note, tags))
     }
 }
 
