@@ -1,6 +1,3 @@
-export const updateObject = (oldOBject, updatedProperties) => {
-    return {
-        ...oldOBject,
-        ...updatedProperties
-    }
+export const updateObject = (oldObject, updatedProperties) => {
+    return Object.assign({}, oldObject, updatedProperties)
 }

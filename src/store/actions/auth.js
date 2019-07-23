@@ -1,8 +1,6 @@
 import * as actionTypes from './actionTypes'
 import axios from 'axios'
 
-/* AUTHENTICATION */
-
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START
@@ -106,43 +104,5 @@ export const authLogin = (username, password, cancelToken) => {
                     dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000))
                 }
              }
-        }
-    }
-
-
-/* RESOURCES */
-
-    export const resAddStart = () => {
-        return {
-            type: actionTypes.RES_ADD_START
-        }
-    }
-
-    export const resAddSuccess = () => {
-        return {
-            type: actionTypes.RES_ADD_SUCCESS
-        }
-    }
-
-    export const resAddFail = error => {
-        return {
-            type: actionTypes.RES_ADD_FAIL,
-            error: error
-        }
-    }
-
-
-    export const addRes = (title, url, note, tags) => {
-        return dispatch => {
-            return axios.post('http://localhost:8000/api/resources/', {
-                title:title,
-                url:url,
-                note:(!note ? undefined : note), // Do not send if empty
-                tags:(tags ? tags.split(',') : undefined), // Split into array first (see model)
-            },{
-                headers:{
-                    "Authorization": "Token " + localStorage.getItem('token'),
-                }
-            })
         }
     }

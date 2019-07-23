@@ -1,8 +1,8 @@
 import React from 'react'
 import TextArea from 'antd/lib/input/TextArea'
 import { Icon, Form, Modal, Input, Tooltip } from 'antd'
-import * as actions from '../store/actions/auth';
-import { connect } from 'react-redux';
+import * as actions from '../store/actions/resources'
+import { connect } from 'react-redux'
 
 class ResAddModal extends React.Component {
 
