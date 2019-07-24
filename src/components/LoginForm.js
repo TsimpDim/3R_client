@@ -97,39 +97,39 @@ class NormalLoginForm extends React.Component {
             return (
                 <div id="flex-container">
                     
-                        <h3 className="logo"><span className="logo-gold">L</span>ogin</h3>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Item>
-                                {getFieldDecorator('username', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: 'Please input your username!',
-                                            whitespace: true 
-                                        }],
-                                })(
-                                    <Input name="username" onChange={this.handleChange} prefix={<Icon type="user"/>} placeholder="Username"/>
-                                )}
-                            </Form.Item>
-                            <Form.Item>
-                                {getFieldDecorator("password", {
-                                    rules:[
-                                        {
-                                            required:true,
-                                            message:"Please input your password!",
-                                            whitespace: true 
-                                        }
-                                    ]
-                                })(
-                                    <Input name="password"  type="password" prefix={<Icon type="lock"/>} onChange={this.handleChange} placeholder="Password" />
-                                )}
-                            </Form.Item>
-                            <Form.Item>
-                                {/* Route <Link> properly when the functionality gets implemented */}
-                                <Button type="primary" htmlType="submit" className="login-form-button">Log in</Button>
-                                <Link className="login-form-forgot" to=""> Forgot password </Link>
-                            </Form.Item>
-                        </Form>
+                    <h3 className="logo"><span className="logo-gold">L</span>ogin</h3>
+                    <Form onSubmit={this.handleSubmit}>
+                        <Form.Item>
+                            {getFieldDecorator('username', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: 'Please input your username!',
+                                        whitespace: true 
+                                    }],
+                            })(
+                                <Input name="username" onChange={this.handleChange} prefix={<Icon type="user"/>} placeholder="Username"/>
+                            )}
+                        </Form.Item>
+                        <Form.Item>
+                            {getFieldDecorator("password", {
+                                rules:[
+                                    {
+                                        required:true,
+                                        message:"Please input your password!",
+                                        whitespace: true 
+                                    }
+                                ]
+                            })(
+                                <Input name="password"  type="password" prefix={<Icon type="lock"/>} onChange={this.handleChange} placeholder="Password" />
+                            )}
+                        </Form.Item>
+                        <Form.Item>
+                            {/* Route <Link> properly when the functionality gets implemented */}
+                            <Button type="primary" htmlType="submit" className="login-form-button">Log in</Button>
+                            <Link className="login-form-forgot" to=""> Forgot password </Link>
+                        </Form.Item>
+                    </Form>
 
                     {this.state.loading &&
                         <div><Icon id="loading-spinner" type="loading" spin /></div>

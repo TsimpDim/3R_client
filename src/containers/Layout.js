@@ -8,13 +8,18 @@ const { Content } = Layout;
 
 export default class CustomLayout extends React.Component {
 
-    render (){ 
+    render (){
+
+        const childrenWithProps = React.Children.map(this.props.children, child =>
+            React.cloneElement(child, {...this.props})
+        );
+        
         return (
             <Layout>
                 <CustomHeader {...this.props}/>
 
                 <Content style={{background:'white', borderTop:'1px solid lightgrey'}}>
-                    {this.props.children}
+                    { childrenWithProps }
                 </Content>
             </Layout>
         )

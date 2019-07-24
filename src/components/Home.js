@@ -24,16 +24,16 @@ export default class Home extends Component {
 
     render() {
         if(!this.props.isAuthenticated)
-            return (
-                <Redirect push to={{
-                        pathname:'/login',
-                        state:"redir"
-                    }} 
-                />
-            );
+            return(
+                <Redirect to={{
+                    pathname:"/login",
+                    state:"redir"
+                }}/>
+            )
         else
             return (
                 <div style={{display:"flex column", padding:"2em"}}>
+                    {this.props.isAuthenticated}
                     <div className="flex-row">
                         <Button
                             size="large"
