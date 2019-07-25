@@ -48,6 +48,9 @@ class ResAddModal extends React.Component {
                         confirmLoading:false
                     });
 
+                    // Notify components to refresh the list
+                    this.props.refreshData(true);
+
                     // Flash success message
                     succ_res_add();
 

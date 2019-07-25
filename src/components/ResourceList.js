@@ -18,6 +18,11 @@ export default class ResourceList extends React.Component {
 
     }
 
+    componentWillReceiveProps() {
+        if(this.props.refreshData())
+            this.refreshList();
+    }
+
     componentDidMount() {
         this.refreshList();
     }
@@ -74,7 +79,7 @@ export default class ResourceList extends React.Component {
                             />
                         
                         {item.tags && item.tags.map(item => (
-                            <Tag style={{marginTop:"10px"}}>{item}</Tag>
+                            <Tag key={item} style={{marginTop:"10px"}}>{item}</Tag>
                         ))}
 
 
