@@ -3,6 +3,7 @@ import { Button } from 'antd'
 import { Redirect } from 'react-router-dom'
 import './styles/Home.scss'
 import ResAddModal from './ResAddModal'
+import ResourceList from './ResourceList';
 
 export default class Home extends Component {
 
@@ -48,6 +49,8 @@ export default class Home extends Component {
                         <ResAddModal
                         visible={this.state.resAddModalVisible}
                         toggleVisible={this.toggleModalVisible}/>
+
+                        <ResourceList />
                     </div>
                 </div>
             )
