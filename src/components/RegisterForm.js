@@ -5,7 +5,6 @@ import {
 import { Redirect } from 'react-router-dom';
 import * as actions from '../store/actions/auth';
 import { connect} from 'react-redux';
-import './styles/RegisterForm.scss';
 import { ntwrk_err, succ_register } from './shared/messages';
 
 class RegisterForm extends React.Component {
