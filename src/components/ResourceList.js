@@ -54,9 +54,13 @@ export default class ResourceList extends React.Component {
             style={{ width: 300, marginTop: 16 }}
             actions={[<Icon type="edit" />, <Icon type="link" />, <Icon type="ellipsis" />]}
             hoverable={true}
-            extra={<span><Icon type="calendar"/> {this.reformatDate(item.date_of_creation)}</span>}
+            headStyle={{backgroundColor:"#323232", borderLeft:"2px #fadb14 solid"}}
+            bodyStyle={{backgroundColor:"#e8e8e8", borderLeft:"2px #fadb14 solid"}}
+            extra={<span style={{color:"white"}}><Icon type="calendar"/> {this.reformatDate(item.date_of_creation)}</span>}
             >
                 <Meta
+                style={{color:"white"}}
+                onClick={() => window.open(item.url, "_blank")}
                 title={item.title}
                 description={item.note}
                 />

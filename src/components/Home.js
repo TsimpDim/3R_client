@@ -51,7 +51,6 @@ export default class Home extends Component {
                             size="large"
                             icon="plus-circle"
                             type="primary"
-                            style={{backgroundColor: "#52c41a", border:"none"}}
                             onClick={() => this.setState({resAddModalVisible:true})}
                         >
                             Add Resource
