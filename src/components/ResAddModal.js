@@ -95,7 +95,7 @@ class ResAddModal extends React.Component {
                 width={800}
                 confirmLoading={this.state.confirmLoading}
                 footer={[
-                    <Button key="return" onClick={this.handleCancel}>
+                    <Button key="return" onClick={this.handleCancelResMod}>
                         Return
                     </Button>
                     ,
