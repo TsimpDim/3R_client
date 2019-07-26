@@ -27,8 +27,9 @@ body{
 #loading-spinner{
     color: $spinner-color;
     font-size: 4em;
-    position: relative;
-    top: -3em;
+    position: fixed;
+    right: 50%;
+    top: 50%;
 }
 
 .ant-form {
