@@ -28,3 +28,7 @@ export const succ_res_add = () => {
 export const succ_copy = () => {
     message.success("URL copied to clipboard");
 }
+
+export const err_delete = () => {
+    message.error("Error deleting resource");
+}

@@ -45,7 +45,6 @@ export default class Home extends Component {
         else
             return (
                 <div style={{display:"flex column", padding:"2em"}}>
-                    {this.props.isAuthenticated}
                     <div className="flex-row">
                         <Button
                             size="large"

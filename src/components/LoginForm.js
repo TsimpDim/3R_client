@@ -47,14 +47,14 @@ class NormalLoginForm extends React.Component {
         this.props.form.validateFields((err) => {
             if(!err)
                 this.props.onAuth(this.state.username, this.state.password, this.signal.token).then(res => {
-                    // this.setState({loading : false});
-
                     if(this.props.isAuthenticated){
                         this.props.history.push('/', {
                             selection: "home"
                         });
                         succ_login();
                     }else{
+                        this.setState({loading : false});
+
                         if(this.props.error.response === undefined){
                             this.props.form.setFields({
                                 "username": {
