@@ -50,12 +50,13 @@ export default class ResourceList extends React.Component {
     deleteResource = (idx) => {
         this.setState({ loading: true });
 
-        axios.delete("http://localhost:8000/api/resources/"+idx+"/",
+        axios.patch("http://localhost:8000/api/resources/"+idx+"/",
         {
+            visible:false,
+        },{
             headers:{
                 "Authorization": "Token " + localStorage.getItem('token'),
-            }
-        })
+        }})
         .then(res => this.setState({
             resources: this.state.resources.filter(item => item.id !== idx),
             loading:false 
