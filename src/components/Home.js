@@ -12,21 +12,16 @@ export default class Home extends Component {
 
         this.state = {
             resAddModalVisible: false,
-            toRefresh: false
+            refresh: false
         }
 
         this.toggleModalVisible = this.toggleModalVisible.bind(this);
-        this.refreshData = this.refreshData.bind(this);
+        this.triggerRefresh = this.triggerRefresh.bind(this);
     }
 
-    refreshData(ref) {
-        if(ref)
-            this.setState({toRefresh:ref});
-        else
-            return this.state.toRefresh;
+    triggerRefresh() {
+        this.setState({ refresh: !this.state.refresh });
     }   
-
-
 
     toggleModalVisible() {
         this.setState(state => ({
@@ -58,10 +53,11 @@ export default class Home extends Component {
                         <ResAddModal
                         visible={this.state.resAddModalVisible}
                         toggleVisible={this.toggleModalVisible}
-                        refreshData={this.refreshData}
+                        refresh={this.state.refresh}
+                        triggerRefresh={this.triggerRefresh}
                         />
 
-                        <ResourceList refreshData={this.refreshData}/>
+                        <ResourceList refresh={this.state.refresh} triggerRefresh={this.triggerRefresh}/>
                     </div>
                 </div>
             )

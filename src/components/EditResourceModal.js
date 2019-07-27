@@ -2,33 +2,79 @@ import React from 'react'
 import TextArea from 'antd/lib/input/TextArea'
 import './styles/_shared.scss'
 import { Icon, Form, Modal, Input, Tooltip, Button } from 'antd'
-import * as actions from '../store/actions/resources'
-import { connect } from 'react-redux'
-import { succ_res_add } from './shared/messages'
+import axios from 'axios'
 
-class ResAddModal extends React.Component {
+class EditResourceModal extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = { 
             confirmLoading: false,
-            title: '',
-            url: '',
-            note: '',
-            tags: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    updateFormFields = () => {
+        this.props.form.setFields({
+            "title":{value:this.props.data.title},
+            "url":{value:this.props.data.url},
+            "notes":{value:this.props.data.notes},
+            "tags":{value:this.props.data.tags}
+        });
+    }
+
+    componentDidMount(){
+        this.props.form.validateFields();
+    }
+
+    componentWillMount(){
+        this.updateFormFields();
+    }
+
+    componentDidUpdate(prevProps){
+        if(this.props.data !== prevProps.data){
+            this.updateFormFields();
+        }
     }
 
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    // Returns true if resource was added or false otherwise.
-    // That way "addNext" knows whether to clear the fields or not
-    handleOkResMod = (addNext) => {
+    updateResource = () => {
+        this.setState({ loading: true });
+        let id = this.props.data.id;
+        let title = this.props.form.getFieldValue('title');
+        let url = this.props.form.getFieldValue('url');
+        let note = this.props.form.getFieldValue('note');
+        let tags = this.props.form.getFieldValue('tags');
+
+        axios.patch("http://localhost:8000/api/resources/" + id + "/",
+        {
+            title: title,
+            url: url,
+            note: (!note ? undefined : note),
+            tags:(tags ? tags.split(',') : undefined),
+        },{
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+            this.setState({ confirmLoading:false });
+            this.props.toggleVisible(); 
+
+            // Refresh has to be triggered in here after promise is completed
+            // so that the update has finished first
+            this.props.triggerRefresh();
+        })
+        .catch(err => console.log(err));
+    }
+
+
+    handleOkResMod = () => {
         this.setState({
             confirmLoading:true
         });
@@ -38,45 +84,15 @@ class ResAddModal extends React.Component {
                 this.setState({ confirmLoading:false });
             }
             else{
-                this.props.addResource(this.state.title, this.state.url, this.state.note, this.state.tags).then(res => {
-               
-                    // Stop showing the loading icon
-                    this.setState({
-                        confirmLoading:false
-                    });
-
-                    // Notify components to refresh the list
-                    this.props.triggerRefresh();
-
-                    // Flash success message
-                    succ_res_add();
-
-                    // If addNext is not true that means that
-                    // we want to close the dialog.
-                    // We don't use 'if(!addNext)' to avoid unecessary
-                    // complexity for the null/undefined values.
-                    if(addNext !== true)
-                        this.props.toggleVisible();
-                    
-                    // We always want to reset the fields since
-                    // otherwise when we re-opened the form we would
-                    // see the previous values
-                    this.props.form.resetFields();
-                });
-
+                this.updateResource();
             }
         });
     };
 
-    handleAddNext = () => {
-        this.handleOkResMod(true);
-    }
     
     handleCancelResMod = () => {
         this.props.toggleVisible();
-        this.setState({
-            confirmLoading:false,
-        });
+        this.setState({ confirmLoading:false });
     }
 
 
@@ -85,7 +101,7 @@ class ResAddModal extends React.Component {
         return (
     
             <Modal
-                title="Add Resource"
+                title="Edit Resource"
                 visible={this.props.visible}
                 onOk={this.handleOkResMod}
                 onCancel={this.handleCancelResMod}
@@ -96,12 +112,8 @@ class ResAddModal extends React.Component {
                         Return
                     </Button>
                     ,
-                    <Button key="add-next" loading={this.state.confirmLoading} onClick={this.handleAddNext}>
-                        Add Next
-                    </Button>
-                    ,
                     <Button key="add" type="primary" loading={this.state.confirmLoading} onClick={this.handleOkResMod}>
-                        Add
+                        Update
                     </Button>
                 ]}
             >
@@ -124,7 +136,6 @@ class ResAddModal extends React.Component {
                             <Input 
                             name="title"
                             prefix={<Icon type="info" />}
-                            onChange={this.handleChange}
                             placeholder="Title"
                             suffix={
                                 <Tooltip title="Allowed: English, Greek, underscore(_) and space">
@@ -189,19 +200,5 @@ class ResAddModal extends React.Component {
     }
 }
 
-const ResAddForm = Form.create()(ResAddModal)
-
-const mapStateToProps = (state) => {
-    return {
-        loading: state.loading,
-        error: state.error
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        addResource: (title, url, note, tags) => dispatch(actions.addRes(title, url, note, tags))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ResAddForm);
+const ResEditForm = Form.create()(EditResourceModal)
+export default ResEditForm;

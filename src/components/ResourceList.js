@@ -2,9 +2,9 @@ import React from 'react'
 import { Card, Icon, Tag, Empty, Popconfirm } from 'antd'
 import axios from 'axios'
 import Masonry from 'react-masonry-component'
-import './styles/_shared.scss'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { succ_copy } from './shared/messages'
+import EditResourceModal from './EditResourceModal'
 
 const { Meta } = Card;
 const masonryOptions = {
@@ -20,13 +20,19 @@ export default class ResourceList extends React.Component {
     
         this.state = {
             resources: [],
-            loading: true
+            loading: true,
+            editDrawerVisible:false,
+            drawerData: []
         }
 
     }
 
-    componentWillReceiveProps() {
-        if(this.props.refreshData())
+    toggleDrawerVisible = () => {
+        this.setState({ editDrawerVisible: !this.state.editDrawerVisible });
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.refresh !== prevProps.refresh)
             this.refreshList();
     }
 
@@ -43,7 +49,7 @@ export default class ResourceList extends React.Component {
                 "Authorization": "Token " + localStorage.getItem('token'),
             }
         })
-        .then(res => this.setState({ resources: res.data, loading:false }))
+        .then(res => this.setState({ resources:res.data, loading:false }))
         .catch(err => console.log(err));
     };
 
@@ -64,10 +70,30 @@ export default class ResourceList extends React.Component {
         }))
         .catch(err => console.log(err));
     };
+
+    getResource = (idx) => {
+        this.setState({ loading: true });
+
+        axios.get("http://localhost:8000/api/resources/"+idx+"/",
+        {
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+            this.setState({ drawerData:res.data, loading:false })
+        })
+        .catch(err => console.log(err));
+    };
     
     reformatDate = (dateStr) => {
         let dateArr = dateStr.split("-");  // ex input "2010-01-18"
         return dateArr[2]+ "/" +dateArr[1]+ "/" +dateArr[0].substring(2); //ex out: "18/01/10"
+    }
+
+    onEdit = (idx) => {
+        this.getResource(idx);
+        this.toggleDrawerVisible();
     }
 
     renderCards = () => {
@@ -81,7 +107,7 @@ export default class ResourceList extends React.Component {
                 <Card
                 style={{ width: 300, marginTop: 16 }}
                 actions={[
-                    <Icon type="edit" />,
+                    <Icon type="edit" onClick={() => this.onEdit(item.id)}/>,
                     <CopyToClipboard onCopy={succ_copy} text={item.url}><Icon type="link" /></CopyToClipboard>,
                     <Popconfirm
                     title="Remove resource?"
@@ -101,10 +127,10 @@ export default class ResourceList extends React.Component {
                     title={item.title}
                     description={item.note}
                     />
-                
-                {item.tags && item.tags.map(item => (
-                    <Tag key={item} style={{marginTop:"10px"}}>{item}</Tag>
-                ))}
+                    
+                    {item.tags && item.tags.map(item => (
+                        <Tag key={item} style={{marginTop:"10px"}}>{item}</Tag>
+                    ))}
 
                 </Card>
             ));
@@ -122,6 +148,13 @@ export default class ResourceList extends React.Component {
                 >
                     {this.renderCards()}
                 </Masonry>
+
+                <EditResourceModal
+                visible={this.state.editDrawerVisible}
+                toggleVisible={this.toggleDrawerVisible}
+                data={this.state.drawerData}
+                triggerRefresh={this.props.triggerRefresh}
+                />
             
             </div>
         );
