@@ -56,7 +56,8 @@ export default class ResourceList extends React.Component {
         },{
             headers:{
                 "Authorization": "Token " + localStorage.getItem('token'),
-        }})
+            }
+        })
         .then(res => this.setState({
             resources: this.state.resources.filter(item => item.id !== idx),
             loading:false 
@@ -83,7 +84,7 @@ export default class ResourceList extends React.Component {
                     <Icon type="edit" />,
                     <CopyToClipboard onCopy={succ_copy} text={item.url}><Icon type="link" /></CopyToClipboard>,
                     <Popconfirm
-                    title="Delete resource?"
+                    title="Remove resource?"
                     onConfirm={() => this.deleteResource(item.id)}>
                         <Icon type="delete"/>
                     </Popconfirm>

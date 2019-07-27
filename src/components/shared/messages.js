@@ -32,3 +32,15 @@ export const succ_copy = () => {
 export const err_delete = () => {
     message.error("Error deleting resource");
 }
+
+export const succ_delete = () => {
+    message.warn("Resource deleted successfully");
+}
+
+export const succ_recover = () => {
+    message.success("Resource recovered successfully");
+}
+
+export const err_recover = () => {
+    message.error("Couldn't recover resource");
+}

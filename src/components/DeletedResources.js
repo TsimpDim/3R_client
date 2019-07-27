@@ -3,7 +3,7 @@ import { List, Icon,Tag } from 'antd'
 import { Redirect } from 'react-router-dom'
 import './styles/Home.scss'
 import axios from 'axios'
-import { err_delete } from './shared/messages'
+import { err_delete, succ_delete, err_recover, succ_recover } from './shared/messages'
 
 export default class DeletedResources extends Component {
 
@@ -56,9 +56,35 @@ export default class DeletedResources extends Component {
                 deletedResources: this.state.deletedResources.filter(item => item.id !== idx),
                 loading:false
             });
+            succ_delete();
         })
         .catch(err => {
             err_delete();
+            console.log(err)
+        });
+    }
+
+    recoverResource = (idx) => {
+        this.setState({ loading: true });
+
+        axios.patch("http://localhost:8000/api/trash/"+idx+"/",
+        {
+            visible:true
+        },{
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+            this.setState({
+                deletedResources: this.state.deletedResources.filter(item => item.id !== idx),
+                loading:false 
+            });
+
+            succ_recover();
+        })
+        .catch(err => {
+            err_recover();
             console.log(err)
         });
     }
@@ -94,6 +120,7 @@ export default class DeletedResources extends Component {
                             title="Recover"
                             type="undo"
                             style={{fontSize:"2em"}}
+                            onClick={() => this.recoverResource(item.id)}
                             />,
                             <Icon
                             title="Delete Permanently"
