@@ -3,6 +3,8 @@ import { Card, Icon, Tag, Empty, Popconfirm } from 'antd'
 import axios from 'axios'
 import Masonry from 'react-masonry-component'
 import './styles/_shared.scss'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { succ_copy } from './shared/messages'
 
 const { Meta } = Card;
 const masonryOptions = {
@@ -78,7 +80,7 @@ export default class ResourceList extends React.Component {
                 style={{ width: 300, marginTop: 16 }}
                 actions={[
                     <Icon type="edit" />,
-                    <Icon type="link" />,
+                    <CopyToClipboard onCopy={succ_copy} text={item.url}><Icon type="link" /></CopyToClipboard>,
                     <Popconfirm
                     title="Delete resource?"
                     onConfirm={() => this.deleteResource(item.id)}>

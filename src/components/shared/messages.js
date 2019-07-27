@@ -24,3 +24,7 @@ export const must_auth = () => {
 export const succ_res_add = () => {
     message.success("Resource added");
 };
+
+export const succ_copy = () => {
+    message.success("URL copied to clipboard");
+}
