@@ -3,7 +3,8 @@ import { Button } from 'antd'
 import { Redirect } from 'react-router-dom'
 import './styles/Home.scss'
 import ResAddModal from './ResAddModal'
-import ResourceList from './ResourceList';
+import ResourceList from './ResourceList'
+import SearchBar from './SearchBar'
 
 export default class Home extends Component {
 
@@ -39,8 +40,8 @@ export default class Home extends Component {
             )
         else
             return (
-                <div style={{display:"flex column", padding:"2em"}}>
-                    <div className="flex-row">
+                <div style={{display:"flex-column", padding:"2em"}}>
+                    <div style={{display:"flex-row"}}>
                         <Button
                             size="large"
                             icon="plus-circle"
@@ -50,15 +51,17 @@ export default class Home extends Component {
                             Add Resource
                         </Button>
 
-                        <ResAddModal
-                        visible={this.state.resAddModalVisible}
-                        toggleVisible={this.toggleModalVisible}
-                        refresh={this.state.refresh}
-                        triggerRefresh={this.triggerRefresh}
-                        />
-
-                        <ResourceList refresh={this.state.refresh} triggerRefresh={this.triggerRefresh}/>
+                        <SearchBar />
                     </div>
+
+                    <ResAddModal
+                    visible={this.state.resAddModalVisible}
+                    toggleVisible={this.toggleModalVisible}
+                    refresh={this.state.refresh}
+                    triggerRefresh={this.triggerRefresh}
+                    />
+
+                    <ResourceList refresh={this.state.refresh} triggerRefresh={this.triggerRefresh}/>
                 </div>
             )
     }
