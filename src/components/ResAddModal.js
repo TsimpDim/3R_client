@@ -2,9 +2,8 @@ import React from 'react'
 import TextArea from 'antd/lib/input/TextArea'
 import './styles/_shared.scss'
 import { Icon, Form, Modal, Input, Tooltip, Button } from 'antd'
-import * as actions from '../store/actions/resources'
-import { connect } from 'react-redux'
 import { succ_res_add } from './shared/messages'
+import axios from 'axios';
 
 class ResAddModal extends React.Component {
 
@@ -26,6 +25,60 @@ class ResAddModal extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
+    addResource = (addNext) => {
+        this.setState({ loading: true });
+
+        let title = this.props.form.getFieldValue('title');
+        let url = this.props.form.getFieldValue('url');
+        let note = this.props.form.getFieldValue('note');
+        let tags = this.props.form.getFieldValue('tags');
+
+        axios.post('http://localhost:8000/api/resources/', {
+            title:title,
+            url:url,
+            note:(note ? note : ""), // Do not send if empty
+            tags:(tags ? tags.split(',') : []), // Split into array first (see model)
+        },{
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+       
+            // Stop showing the loading icon
+            this.setState({ confirmLoading:false });
+
+            // Notify components to refresh the list
+            this.props.triggerRefresh();
+
+            // Flash success message
+            succ_res_add();
+
+            // If addNext is not true that means that
+            // we want to close the dialog.
+            // We don't use 'if(!addNext)' to avoid unecessary
+            // complexity for the null/undefined values.
+            if(addNext !== true)
+                this.props.toggleVisible();
+            
+            // We always want to reset the fields since
+            // otherwise when we re-opened the form we would
+            // see the previous values
+            this.props.form.resetFields();
+            
+        }).catch(err => {
+
+            this.setState({ confirmLoading:false });
+
+            this.props.form.setFields({
+                "tags":{
+                    value: this.props.form.getFieldValue("tags"),
+                    errors: [new Error("*Tags contain duplicates.")],
+                }
+            });
+        }); 
+    }
+
     // Returns true if resource was added or false otherwise.
     // That way "addNext" knows whether to clear the fields or not
     handleOkResMod = (addNext) => {
@@ -34,47 +87,12 @@ class ResAddModal extends React.Component {
         });
         
         this.props.form.validateFields(err => {
-            if(err){
+            if(err)
                 this.setState({ confirmLoading:false });
-            }
-            else{
-                this.props.addResource(this.state.title, this.state.url, this.state.note, this.state.tags).then(res => {
-               
-                    // Stop showing the loading icon
-                    this.setState({ confirmLoading:false });
-
-                    // Notify components to refresh the list
-                    this.props.triggerRefresh();
-
-                    // Flash success message
-                    succ_res_add();
-
-                    // If addNext is not true that means that
-                    // we want to close the dialog.
-                    // We don't use 'if(!addNext)' to avoid unecessary
-                    // complexity for the null/undefined values.
-                    if(addNext !== true)
-                        this.props.toggleVisible();
-                    
-                    // We always want to reset the fields since
-                    // otherwise when we re-opened the form we would
-                    // see the previous values
-                    this.props.form.resetFields();
-                
-                }).catch(err => {
-                    
-                    this.setState({ confirmLoading:false });
-
-                    this.props.form.setFields({
-                        "tags":{
-                            errors: [new Error(err)],
-                        }
-                    })
-                });
-
-            }
+            else
+                this.addResource(addNext);
         });
-    };
+    }
 
     handleAddNext = () => {
         this.handleOkResMod(true);
@@ -125,7 +143,7 @@ class ResAddModal extends React.Component {
                                 max: 120,
                                 message: "*Title exceeds character limit."
                             },{
-                                pattern: "^[A-Za-z0-9_ \u0370-\u03ff\u1f00-\u1fff]*$",
+                                pattern: /^[A-Za-z0-9_ \u0370-\u03ff\u1f00-\u1fff]*$/,
                                 message: "*Title contains invalid characters."
                             }],
                         })(
@@ -171,11 +189,14 @@ class ResAddModal extends React.Component {
                     <Form.Item>
                         {getFieldDecorator('tags', {
                             rules:[{
-                                pattern: "^[a-zA-Z\u0370-\u03ff\u1f00-\u1fff,_]*$",
+                                pattern: /^[a-zA-Z\u0370-\u03ff\u1f00-\u1fff,_]*$/,
                                 message: "*Tags are in improper form - read the tip."
                             },{
                                 max: 60,
                                 message: "*Tags exceed character limit."
+                            },{
+                                pattern: /^\w+(,\w+)*$/,
+                                message: "*Empty tags not allowed."
                             }]
                         })(
                             <Input
@@ -199,17 +220,4 @@ class ResAddModal extends React.Component {
 
 const ResAddForm = Form.create()(ResAddModal)
 
-const mapStateToProps = (state) => {
-    return {
-        loading: state.loading,
-        error: state.error
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        addResource: (title, url, note, tags) => dispatch(actions.addRes(title, url, note, tags))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ResAddForm);
+export default ResAddForm;

@@ -54,8 +54,8 @@ class EditResourceModal extends React.Component {
         {
             title: title,
             url: url,
-            note: (!note ? null : note),
-            tags:(tags ? tags.split(',') : null),
+            note: (note ? note : ""),
+            tags:(tags ? tags.split(',') : []),
         },{
             headers:{
                 "Authorization": "Token " + localStorage.getItem('token'),
@@ -185,6 +185,9 @@ class EditResourceModal extends React.Component {
                             },{
                                 max: 60,
                                 message: "*Tags exceed character limit."
+                            },{
+                                pattern: /^\w+(,\w+)*$/,
+                                message: "*Empty tags not allowed."
                             }]
                         })(
                             <Input

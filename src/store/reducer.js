@@ -35,27 +35,6 @@ const authLogout = (state, action) => {
     });
 }
 
-const resAddStart = (state, action) => {
-    return updateObject(state, {
-        error: null,
-        loading: true
-    });
-}
-
-const resAddSuccess = (state, action) => {
-    return updateObject(state, {
-        error: null,
-        loading: false
-    });
-}
-
-const resAddFail = (state, action) => {
-    return updateObject(state, {
-        error: action.error,
-        loading: false
-    });
-}
-
 
 
 const reducer = (state=initialState, action) => {
@@ -64,9 +43,6 @@ const reducer = (state=initialState, action) => {
         case actionTypes.AUTH_SUCCESS: return authSuccess(state, action);
         case actionTypes.AUTH_LOGOUT: return authLogout(state, action);
         case actionTypes.AUTH_FAIL: return authFail(state, action);
-        case actionTypes.RES_ADD_START: return resAddStart(state, action);
-        case actionTypes.RES_ADD_SUCCESS: return resAddSuccess(state, action);
-        case actionTypes.RES_ADD_FAIL: return resAddFail(state, action);
         default: 
             return state;
     }
