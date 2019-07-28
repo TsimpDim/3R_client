@@ -17,20 +17,19 @@ class EditResourceModal extends React.Component {
     }
 
     updateFormFields = () => {
+        let title = this.props.data.title;
+        let url = this.props.data.url;
+        let note = this.props.data.note;
+        let tags = this.props.data.tags;
+        if(tags)
+            tags = tags.join(',')
+
         this.props.form.setFields({
-            "title":{value:this.props.data.title},
-            "url":{value:this.props.data.url},
-            "notes":{value:this.props.data.notes},
-            "tags":{value:this.props.data.tags}
+            "title":{value: title},
+            "url":{value: url},
+            "note":{value: note},
+            "tags":{value: tags}
         });
-    }
-
-    componentDidMount(){
-        this.props.form.validateFields();
-    }
-
-    componentWillMount(){
-        this.updateFormFields();
     }
 
     componentDidUpdate(prevProps){
@@ -55,8 +54,8 @@ class EditResourceModal extends React.Component {
         {
             title: title,
             url: url,
-            note: (!note ? undefined : note),
-            tags:(tags ? tags.split(',') : undefined),
+            note: (!note ? null : note),
+            tags:(tags ? tags.split(',') : null),
         },{
             headers:{
                 "Authorization": "Token " + localStorage.getItem('token'),
@@ -74,18 +73,16 @@ class EditResourceModal extends React.Component {
     }
 
 
-    handleOkResMod = () => {
+    handleUpdate = () => {
         this.setState({
             confirmLoading:true
         });
         
         this.props.form.validateFields(err => {
-            if(err){
+            if(err)
                 this.setState({ confirmLoading:false });
-            }
-            else{
+            else
                 this.updateResource();
-            }
         });
     };
 
@@ -103,7 +100,7 @@ class EditResourceModal extends React.Component {
             <Modal
                 title="Edit Resource"
                 visible={this.props.visible}
-                onOk={this.handleOkResMod}
+                onOk={this.handleUpdate}
                 onCancel={this.handleCancelResMod}
                 width={800}
                 confirmLoading={this.state.confirmLoading}
@@ -112,7 +109,7 @@ class EditResourceModal extends React.Component {
                         Return
                     </Button>
                     ,
-                    <Button key="add" type="primary" loading={this.state.confirmLoading} onClick={this.handleOkResMod}>
+                    <Button key="add" type="primary" loading={this.state.confirmLoading} onClick={this.handleUpdate}>
                         Update
                     </Button>
                 ]}
