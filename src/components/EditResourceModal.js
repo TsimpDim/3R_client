@@ -69,7 +69,16 @@ class EditResourceModal extends React.Component {
             // so that the update has finished first
             this.props.triggerRefresh();
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            this.setState({ confirmLoading:false });
+
+            this.props.form.setFields({
+                "tags":{
+                    value: this.props.form.getFieldValue("tags"),
+                    errors: [new Error("*Tags contain duplicates.")],
+                }
+            })
+        });
     }
 
 
@@ -126,7 +135,7 @@ class EditResourceModal extends React.Component {
                                 max: 120,
                                 message: "*Title exceeds character limit."
                             },{
-                                pattern: "^[A-Za-z0-9_ \u0370-\u03ff\u1f00-\u1fff]*$",
+                                pattern: /^[A-Za-z0-9_ \u0370-\u03ff\u1f00-\u1fff]*$/,
                                 message: "*Title contains invalid characters."
                             }],
                         })(
@@ -171,7 +180,7 @@ class EditResourceModal extends React.Component {
                     <Form.Item>
                         {getFieldDecorator('tags', {
                             rules:[{
-                                pattern: "^[a-zA-Z\u0370-\u03ff\u1f00-\u1fff,_]*$",
+                                pattern: /^[a-zA-Z\u0370-\u03ff\u1f00-\u1fff,_]*$/,
                                 message: "*Tags are in improper form - read the tip."
                             },{
                                 max: 60,

@@ -41,9 +41,7 @@ class ResAddModal extends React.Component {
                 this.props.addResource(this.state.title, this.state.url, this.state.note, this.state.tags).then(res => {
                
                     // Stop showing the loading icon
-                    this.setState({
-                        confirmLoading:false
-                    });
+                    this.setState({ confirmLoading:false });
 
                     // Notify components to refresh the list
                     this.props.triggerRefresh();
@@ -62,6 +60,16 @@ class ResAddModal extends React.Component {
                     // otherwise when we re-opened the form we would
                     // see the previous values
                     this.props.form.resetFields();
+                
+                }).catch(err => {
+                    
+                    this.setState({ confirmLoading:false });
+
+                    this.props.form.setFields({
+                        "tags":{
+                            errors: [new Error(err)],
+                        }
+                    })
                 });
 
             }
