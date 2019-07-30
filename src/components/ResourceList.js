@@ -102,8 +102,17 @@ export default class ResourceList extends React.Component {
                     description={<span><Icon type="frown"/> No resources yet.<br/>Click the <span style={{color:"#108ee9"}}>blue</span> button on the top left!</span>}
                     style={{marginRight:"auto", marginLeft:"45%"}}
                     />
-        else
-            return this.state.resources.map(item => (
+        else {
+
+            let resourcesArray = this.state.resources;
+            if(this.props.textFilter && this.props.textFilter !== "")
+                resourcesArray = resourcesArray.filter(item => item.title.toLowerCase().includes(this.props.textFilter.toLowerCase()));
+            
+            // if(this.props.tagsFilter){
+            //     resourcesArray = resourcesArray.filter(item => item.tags.every(val => this.props.tagsFilter.includes(val)));
+            // }
+
+            return resourcesArray.map(item => (
                 <Card
                 style={{ width: 300, marginTop: 16 }}
                 actions={[
@@ -134,6 +143,7 @@ export default class ResourceList extends React.Component {
 
                 </Card>
             ));
+        }
     }
 
     render () {

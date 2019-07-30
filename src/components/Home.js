@@ -13,7 +13,9 @@ export default class Home extends Component {
 
         this.state = {
             resAddModalVisible: false,
-            refresh: false
+            refresh: false,
+            textFilter: "",
+            tagsFilter: [],
         }
 
         this.toggleModalVisible = this.toggleModalVisible.bind(this);
@@ -22,12 +24,18 @@ export default class Home extends Component {
 
     triggerRefresh() {
         this.setState({ refresh: !this.state.refresh });
-    }   
+    }
+
+    setTextFilter = (textFilter) => {
+        this.setState({ textFilter: textFilter });
+    }
+
+    setTagsFilter = (tagsFilter) => {
+        this.setState({ tagsFilter: tagsFilter.split(',') }, () => console.log(this.state.tagsFilter));
+    }
 
     toggleModalVisible() {
-        this.setState(state => ({
-            resAddModalVisible: !state.resAddModalVisible
-        }));
+        this.setState({ resAddModalVisible: !this.state.resAddModalVisible });
     }
 
     render() {
@@ -51,7 +59,11 @@ export default class Home extends Component {
                             Add Resource
                         </Button>
 
-                        <SearchBar />
+                        <SearchBar
+                        setTextFilter={this.setTextFilter}
+                        setTagsFilter={this.setTagsFilter}
+                        triggerRefresh={this.triggerRefresh}
+                        />
                     </div>
 
                     <ResAddModal
@@ -61,7 +73,12 @@ export default class Home extends Component {
                     triggerRefresh={this.triggerRefresh}
                     />
 
-                    <ResourceList refresh={this.state.refresh} triggerRefresh={this.triggerRefresh}/>
+                    <ResourceList
+                    refresh={this.state.refresh}
+                    triggerRefresh={this.triggerRefresh}
+                    textFilter={this.state.textFilter}
+                    tagsFilter={this.state.tagsFilter}
+                    />
                 </div>
             )
     }
