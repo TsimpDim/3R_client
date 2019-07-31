@@ -3,29 +3,24 @@ import { Select, Input, Icon } from 'antd'
 
 
 const InputGroup = Input.Group;
+const { Option } = Select;
 
 export default class SearchBar extends React.Component{
 
-    constructor(props){
-        super(props);
-    
-        this.state = {
-            tags: [],
-        }
-    }
-
-    componentDidMount() {
-        this.getTags();
-    }
-
     onTitleFilterChange = (e) => {
-        this.props.setTagsFilter(e.target.value);
-    }
-
-    onTagsFilterChange = (e) => {
         this.props.setTextFilter(e.target.value);
     }
 
+    onTagsFilterChange = (value) => {
+        // Parameter value is an array
+        this.props.setTagsFilter(value);
+    }
+
+    renderTagOptions = () => {
+        return this.props.getTags().map(i => (
+            <Option key={i}>{i}</Option>
+        ));
+    }
 
     render(){
 
@@ -38,17 +33,17 @@ export default class SearchBar extends React.Component{
                     suffixIcon={<Icon type="tag" />}
                     showArrow
                     allowClear
-                    onChange={this.onTitleFilterChange}
+                    onChange={this.onTagsFilterChange}
                 >
-                    {this.state.tags}
+                    {this.renderTagOptions()}
                 </Select>
 
                 <Input
-                style={{ width: '50%' }}
+                style={{width: "50%"}}
                 placeholder="Title may contain..."
                 suffix={<Icon type="search"/>}
                 maxLength={120}
-                onChange={this.onTagsFilterChange}
+                onChange={this.onTitleFilterChange}
                 />
             </InputGroup>
         );

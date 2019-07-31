@@ -68,8 +68,11 @@ export default class ResourceList extends React.Component {
     };
     
     reformatDate = (dateStr) => {
-        let dateArr = dateStr.split("-");  // ex input "2010-01-18"
-        return dateArr[2]+ "/" +dateArr[1]+ "/" +dateArr[0].substring(2); //ex out: "18/01/10"
+        if(dateStr){
+            let dateArr = dateStr.split("-");  // ex input "2010-01-18"
+            return dateArr[2]+ "/" +dateArr[1]+ "/" +dateArr[0].substring(2); //ex out: "18/01/10"
+        }else
+            return "?";
     }
 
     onEdit = (idx) => {
@@ -85,15 +88,16 @@ export default class ResourceList extends React.Component {
                     />
         else {
 
-            // Text (title) Search
+            // Text (title) search
             let resourcesArray = this.props.resources;
             if(this.props.textFilter && this.props.textFilter !== "")
                 resourcesArray = resourcesArray.filter(item => item.title.toLowerCase().includes(this.props.textFilter.toLowerCase()));
             
-            // 
-            // if(this.props.tagsFilter){
-            //     resourcesArray = resourcesArray.filter(item => item.tags.every(val => this.props.tagsFilter.includes(val)));
-            // }
+            // Tag search
+            if(this.props.tagsFilter.length !== 0){
+                // Get each item of which every tag is included in the tagsFilter
+                resourcesArray = resourcesArray.filter(item => item.tags.some(val => this.props.tagsFilter.includes(val)));
+            }
 
             return resourcesArray.map(item => (
                 <Card
@@ -136,11 +140,13 @@ export default class ResourceList extends React.Component {
                 {this.state.loading &&
                 <Icon id="loading-spinner" type="loading" spin />}
 
+                {!this.state.loading && 
                 <Masonry
                 options={masonryOptions}
                 >
                     {this.renderCards()}
                 </Masonry>
+                }
 
                 <EditResourceModal
                 visible={this.state.editDrawerVisible}

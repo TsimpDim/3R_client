@@ -41,6 +41,24 @@ export default class Home extends Component {
         });
     }
 
+    getTags = () => {
+        
+        const res = this.state.resources;
+        
+        if(res){
+            // Capture all tags in an array
+            let tagArray = [res.map(i => i.tags)];
+
+            // Flatten it
+            tagArray = tagArray.flat(2);
+
+            // Remove duplicates and return
+            return [...new Set(tagArray)];
+
+        }else
+            return null;
+    }
+
     setResources = (setValue) => {
         this.setState({ resources: setValue });
     }
@@ -50,7 +68,7 @@ export default class Home extends Component {
     }
 
     setTagsFilter = (tagsFilter) => {
-        this.setState({ tagsFilter: tagsFilter.split(',') }, () => console.log(this.state.tagsFilter));
+        this.setState({ tagsFilter: tagsFilter });
     }
 
     toggleModalVisible() {
@@ -81,6 +99,7 @@ export default class Home extends Component {
                         <SearchBar
                         setTextFilter={this.setTextFilter}
                         setTagsFilter={this.setTagsFilter}
+                        getTags={this.getTags}
                         />
                     </div>
 
