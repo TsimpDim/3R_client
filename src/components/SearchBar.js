@@ -1,10 +1,8 @@
 import React from 'react';
 import { Select, Input, Icon } from 'antd'
-import axios from 'axios'
 
 
 const InputGroup = Input.Group;
-const { Option } = Select;
 
 export default class SearchBar extends React.Component{
 
@@ -26,19 +24,6 @@ export default class SearchBar extends React.Component{
 
     onTagsFilterChange = (e) => {
         this.props.setTextFilter(e.target.value);
-    }
-
-    getTags = () => {
-        axios.get("http://localhost:8000/api/tags/",
-        {
-            headers:{
-                "Authorization": "Token " + localStorage.getItem('token'),
-            }
-        })
-        .then(res => {
-            this.setState({ tags: res.data })
-        })
-        .catch(err => console.log(err));
     }
 
 

@@ -5,6 +5,7 @@ import './styles/Home.scss'
 import ResAddModal from './ResAddModal'
 import ResourceList from './ResourceList'
 import SearchBar from './SearchBar'
+import axios from 'axios'
 
 export default class Home extends Component {
 
@@ -13,17 +14,35 @@ export default class Home extends Component {
 
         this.state = {
             resAddModalVisible: false,
-            refresh: false,
             textFilter: "",
             tagsFilter: [],
+            resources: []
         }
 
         this.toggleModalVisible = this.toggleModalVisible.bind(this);
-        this.triggerRefresh = this.triggerRefresh.bind(this);
+        this.getResources = this.getResources.bind(this);
     }
 
-    triggerRefresh() {
-        this.setState({ refresh: !this.state.refresh });
+    getResources = (callback) => {
+
+        axios.get("http://localhost:8000/api/resources/",
+        {
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+            this.setState({ resources:res.data });
+            callback();
+        })
+        .catch(err => {
+            console.log(err);
+            callback();
+        });
+    }
+
+    setResources = (setValue) => {
+        this.setState({ resources: setValue });
     }
 
     setTextFilter = (textFilter) => {
@@ -62,22 +81,22 @@ export default class Home extends Component {
                         <SearchBar
                         setTextFilter={this.setTextFilter}
                         setTagsFilter={this.setTagsFilter}
-                        triggerRefresh={this.triggerRefresh}
                         />
                     </div>
 
                     <ResAddModal
                     visible={this.state.resAddModalVisible}
                     toggleVisible={this.toggleModalVisible}
-                    refresh={this.state.refresh}
-                    triggerRefresh={this.triggerRefresh}
+                    triggerRefresh={this.getResources}
                     />
 
                     <ResourceList
+                    resources={this.state.resources}
                     refresh={this.state.refresh}
-                    triggerRefresh={this.triggerRefresh}
+                    triggerRefresh={this.getResources}
                     textFilter={this.state.textFilter}
                     tagsFilter={this.state.tagsFilter}
+                    setResources={this.setResources}
                     />
                 </div>
             )

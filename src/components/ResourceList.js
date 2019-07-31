@@ -19,7 +19,6 @@ export default class ResourceList extends React.Component {
         super(props);
     
         this.state = {
-            resources: [],
             loading: true,
             editDrawerVisible:false,
             drawerData: []
@@ -31,27 +30,9 @@ export default class ResourceList extends React.Component {
         this.setState({ editDrawerVisible: !this.state.editDrawerVisible });
     }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.refresh !== prevProps.refresh)
-            this.refreshList();
-    }
-
     componentDidMount() {
-        this.refreshList();
+        this.props.triggerRefresh(() => this.setState({loading:false}));
     }
-
-    refreshList = () => {
-        this.setState({ loading: true });
-
-        axios.get("http://localhost:8000/api/resources/",
-        {
-            headers:{
-                "Authorization": "Token " + localStorage.getItem('token'),
-            }
-        })
-        .then(res => this.setState({ resources:res.data, loading:false }))
-        .catch(err => console.log(err));
-    };
 
     deleteResource = (idx) => {
         this.setState({ loading: true });
@@ -64,10 +45,10 @@ export default class ResourceList extends React.Component {
                 "Authorization": "Token " + localStorage.getItem('token'),
             }
         })
-        .then(res => this.setState({
-            resources: this.state.resources.filter(item => item.id !== idx),
-            loading:false 
-        }))
+        .then(res => {
+            this.setState({loading: false});
+            this.props.setResources(this.props.resources.filter(item => item.id !== idx));
+        })
         .catch(err => console.log(err));
     };
 
@@ -97,17 +78,19 @@ export default class ResourceList extends React.Component {
     }
 
     renderCards = () => {
-        if(this.state.resources.length === 0)
+        if(this.props.resources.length === 0)
             return <Empty
                     description={<span><Icon type="frown"/> No resources yet.<br/>Click the <span style={{color:"#108ee9"}}>blue</span> button on the top left!</span>}
                     style={{marginRight:"auto", marginLeft:"45%"}}
                     />
         else {
 
-            let resourcesArray = this.state.resources;
+            // Text (title) Search
+            let resourcesArray = this.props.resources;
             if(this.props.textFilter && this.props.textFilter !== "")
                 resourcesArray = resourcesArray.filter(item => item.title.toLowerCase().includes(this.props.textFilter.toLowerCase()));
             
+            // 
             // if(this.props.tagsFilter){
             //     resourcesArray = resourcesArray.filter(item => item.tags.every(val => this.props.tagsFilter.includes(val)));
             // }
