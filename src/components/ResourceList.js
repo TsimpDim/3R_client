@@ -95,8 +95,13 @@ export default class ResourceList extends React.Component {
             
             // Tag search
             if(this.props.tagsFilter.length !== 0){
-                // Get each item of which every tag is included in the tagsFilter
-                resourcesArray = resourcesArray.filter(item => item.tags.some(val => this.props.tagsFilter.includes(val)));
+                if(this.props.absoluteTag) {
+                    // Get each item of which *every* tag is included in the tagsFilter
+                    resourcesArray = resourcesArray.filter(i => i.tags.length !== 0).filter(i => i.tags.every(val => this.props.tagsFilter.includes(val)));
+                }else{
+                    // Get each item of which *some* of the tags are included in the tagsFilter
+                    resourcesArray = resourcesArray.filter(i => i.tags.some(val => this.props.tagsFilter.includes(val)));
+                }
             }
 
             return resourcesArray.map(item => (

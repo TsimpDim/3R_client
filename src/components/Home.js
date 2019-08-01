@@ -16,7 +16,8 @@ export default class Home extends Component {
             resAddModalVisible: false,
             textFilter: "",
             tagsFilter: [],
-            resources: []
+            resources: [],
+            absoluteTag: false
         }
 
         this.toggleModalVisible = this.toggleModalVisible.bind(this);
@@ -57,6 +58,10 @@ export default class Home extends Component {
 
         }else
             return null;
+    }
+
+    setAbsoluteTagSearch = (setValue) => {
+        this.setState({ absoluteTag: setValue });
     }
 
     setResources = (setValue) => {
@@ -100,6 +105,7 @@ export default class Home extends Component {
                         setTextFilter={this.setTextFilter}
                         setTagsFilter={this.setTagsFilter}
                         getTags={this.getTags}
+                        setAbsolute={this.setAbsoluteTagSearch}
                         />
                     </div>
 
@@ -116,6 +122,7 @@ export default class Home extends Component {
                     textFilter={this.state.textFilter}
                     tagsFilter={this.state.tagsFilter}
                     setResources={this.setResources}
+                    absoluteTag={this.state.absoluteTag}
                     />
                 </div>
             )

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Input, Icon } from 'antd'
+import { Select, Input, Icon, Checkbox, Tooltip } from 'antd'
 
 
 const InputGroup = Input.Group;
@@ -26,10 +26,17 @@ export default class SearchBar extends React.Component{
 
         return (
             <InputGroup style={{width:"50%", display:"inline-block", float:"right"}} compact>
+                <Tooltip overlay="Check if you want the resources to contain exactly the tags listed">
+                    <Checkbox
+                    style={{width:"10%", marginTop:".25em"}}
+                    onChange={(e) => this.props.setAbsolute(e.target.checked)}
+                    >Absolute</Checkbox>
+                </Tooltip>
+
                 <Select
                     mode="multiple"
                     placeholder="Tags may contain..."
-                    style={{width:"50%"}}
+                    style={{width:"40%"}}
                     suffixIcon={<Icon type="tag" />}
                     showArrow
                     allowClear
