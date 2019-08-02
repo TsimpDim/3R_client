@@ -1,0 +1,11 @@
+@import '_mixins.scss';
+
+#search-bar{
+    width: 60%;
+    float: right;
+
+    @include lg{
+        margin-top: 2em;
+        width: 100%;
+    }
+}

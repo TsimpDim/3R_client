@@ -57,11 +57,11 @@ render(){
                     <NavLink to='/'></NavLink>
                 </Menu.Item>
                 
-                <Menu.Item key="options">
+                {/* <Menu.Item key="options">
                     <Icon type="setting"/>
                     Options
                     <NavLink to='/options'></NavLink>
-                </Menu.Item>
+                </Menu.Item> */}
                 
                 <Menu.Item key="trash">
                     <Icon type="delete"/>

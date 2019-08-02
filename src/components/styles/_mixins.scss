@@ -8,19 +8,19 @@
 }
 
 @mixin md{
-    @media (min-width: #{$screen-md}){
+    @media (max-width: #{$screen-md}){
         @content;
     }
 }
 
 @mixin lg{
-    @media (min-width: #{$screen-lg}){
+    @media (max-width: #{$screen-lg}){
         @content;
     }
 }
 
 @mixin xl{
-    @media (min-width: #{$screen-xl}){
+    @media (max-width: #{$screen-xl}){
         @content;
     }
 }

@@ -1,3 +1,10 @@
-#text {
-    font-size: 1.5em;
+@import '_mixins.scss';
+
+
+#top-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    @include lg{flex-direction: column;}
 }

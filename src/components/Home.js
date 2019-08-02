@@ -91,7 +91,7 @@ export default class Home extends Component {
         else
             return (
                 <div style={{display:"flex-column", padding:"2em"}}>
-                    <div style={{display:"flex-row"}}>
+                    <div id="top-row">
                         <Button
                             size="large"
                             icon="plus-circle"
@@ -100,7 +100,7 @@ export default class Home extends Component {
                         >
                             Add Resource
                         </Button>
-
+                            
                         <SearchBar
                         setTextFilter={this.setTextFilter}
                         setTagsFilter={this.setTagsFilter}
