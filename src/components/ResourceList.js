@@ -3,7 +3,7 @@ import { Card, Icon, Tag, Empty, Popconfirm } from 'antd'
 import axios from 'axios'
 import Masonry from 'react-masonry-component'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { succ_copy } from './shared/messages'
+import { succ_copy, err_get_res, err_make_invis } from './shared/messages'
 import EditResourceModal from './EditResourceModal'
 
 const { Meta } = Card;
@@ -49,12 +49,13 @@ export default class ResourceList extends React.Component {
             this.setState({loading: false});
             this.props.setResources(this.props.resources.filter(item => item.id !== idx));
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            err_make_invis();
+            console.log(err)
+        });
     };
 
     getResource = (idx) => {
-        this.setState({ loading: true });
-
         axios.get("http://localhost:8000/api/resources/"+idx+"/",
         {
             headers:{
@@ -62,9 +63,12 @@ export default class ResourceList extends React.Component {
             }
         })
         .then(res => {
-            this.setState({ drawerData:res.data, loading:false })
+            this.setState({ drawerData:res.data })
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            err_get_res();
+            console.log(err)
+        });
     };
     
     reformatDate = (dateStr) => {

@@ -44,3 +44,11 @@ export const succ_recover = () => {
 export const err_recover = () => {
     message.error("Couldn't recover resource");
 }
+
+export const err_get_res = () => {
+    message.error("Couldn't grab resource details");
+}
+
+export const err_make_invis = () => {
+    message.error("Couldn't delete resource");
+}
