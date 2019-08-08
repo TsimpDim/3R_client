@@ -52,3 +52,15 @@ export const err_get_res = () => {
 export const err_make_invis = () => {
     message.error("Couldn't delete resource");
 }
+
+export const inf_set_sort = () => {
+    message.info("Setting sorting preference");
+}
+
+export const succ_set_sort = () => {
+    message.success("Sorting preference set");
+}
+
+export const err_set_sort = () => {
+    message.error("Couldn't set sorting preference");
+}
