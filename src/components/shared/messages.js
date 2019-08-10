@@ -64,3 +64,7 @@ export const succ_set_sort = () => {
 export const err_set_sort = () => {
     message.error("Couldn't set sorting preference");
 }
+
+export const err_get_options = () => {
+    message.error("Could not process user options.");
+}

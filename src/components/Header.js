@@ -1,6 +1,6 @@
 import 'antd'
 import React from 'react'
-import { Menu, Icon, Layout, message } from 'antd'
+import { Menu, Icon, Layout } from 'antd'
 import SubMenu from 'antd/lib/menu/SubMenu'
 import * as actions from '../store/actions/auth'
 import { NavLink, withRouter } from 'react-router-dom'

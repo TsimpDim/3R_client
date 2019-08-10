@@ -3,7 +3,7 @@ import { Card, Icon, Tag, Empty, Popconfirm } from 'antd'
 import axios from 'axios'
 import Masonry from 'react-masonry-component'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { succ_copy, err_get_res, err_make_invis } from './shared/messages'
+import { succ_copy, err_get_res, err_make_invis, err_get_options } from './shared/messages'
 import EditResourceModal from './EditResourceModal'
 
 const { Meta } = Card;
@@ -21,7 +21,8 @@ export default class ResourceList extends React.Component {
         this.state = {
             loading: true,
             editDrawerVisible:false,
-            drawerData: []
+            drawerData: [],
+            options: {}
         }
 
     }
@@ -32,6 +33,23 @@ export default class ResourceList extends React.Component {
 
     componentDidMount() {
         this.props.triggerRefresh(() => this.setState({loading:false}));
+        this.getOptions();
+    }
+
+    getOptions = () => {
+        axios.get("http://localhost:8000/api/options/",
+        {
+            headers:{
+                "Authorization": "Token " + localStorage.getItem('token'),
+            }
+        })
+        .then(res => {
+            this.setState({ options:res.data })
+        })
+        .catch(err => {
+            err_get_options();
+            console.log(err);
+        });
     }
 
     deleteResource = (idx) => {
@@ -51,7 +69,7 @@ export default class ResourceList extends React.Component {
         })
         .catch(err => {
             err_make_invis();
-            console.log(err)
+            console.log(err);
         });
     };
 
@@ -67,15 +85,16 @@ export default class ResourceList extends React.Component {
         })
         .catch(err => {
             err_get_res();
-            console.log(err)
+            console.log(err);
         });
     };
+
     
     reformatDate = (dateStr) => {
         if(dateStr){
             let dateArr = dateStr.split("-");  // ex input "2010-01-18"
             return dateArr[2]+ "/" +dateArr[1]+ "/" +dateArr[0].substring(2); //ex out: "18/01/10"
-        }else
+        } else
             return "?";
     }
 
@@ -107,6 +126,23 @@ export default class ResourceList extends React.Component {
                     resourcesArray = resourcesArray.filter(i => i.tags.some(val => this.props.tagsFilter.includes(val)));
                 }
             }
+
+            // Handle sorting
+            if(Object.keys(this.state.options).length !== 0){ // If options not an empty object
+                const sort = this.state.options.sort;
+
+                if(sort === "AAS")
+                    resourcesArray = resourcesArray.sort((a,b) => a.title.localeCompare(b.title));
+                else if(sort === "ADE")
+                    resourcesArray = resourcesArray.sort((a,b) => -(a.title.localeCompare(b.title)));
+                else if(sort === "TAS")
+                    resourcesArray = resourcesArray.sort((a,b) => -(a.date_of_creation.localeCompare(b.date_of_creation)));
+                else if(sort === "TDE")
+                    resourcesArray = resourcesArray.sort((a,b) => a.date_of_creation.localeCompare(b.date_of_creation));
+                else
+                    err_get_options();
+            }
+
 
             return resourcesArray.map(item => (
                 <Card
