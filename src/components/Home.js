@@ -6,6 +6,9 @@ import ResAddModal from './ResAddModal'
 import ResourceList from './ResourceList'
 import SearchBar from './SearchBar'
 import axios from 'axios'
+import ButtonGroup from 'antd/lib/button/button-group'
+import OptionsDD from './OptionsDropdown'
+
 
 export default class Home extends Component {
 
@@ -80,6 +83,10 @@ export default class Home extends Component {
         this.setState({ resAddModalVisible: !this.state.resAddModalVisible });
     }
 
+    updateList = () => {
+        this.refs.reslist.forceUpdate();
+    }
+
     render() {
         if(!this.props.isAuthenticated)
             return(
@@ -92,14 +99,17 @@ export default class Home extends Component {
             return (
                 <div style={{display:"flex-column", padding:"2em"}}>
                     <div id="top-row">
-                        <Button
-                            size="large"
-                            icon="plus-circle"
-                            type="primary"
-                            onClick={() => this.setState({resAddModalVisible:true})}
-                        >
-                            Add Resource
-                        </Button>
+                        <ButtonGroup>
+                            <Button
+                                size="large"
+                                icon="plus-circle"
+                                type="primary"
+                                onClick={() => this.setState({resAddModalVisible:true})}
+                            >
+                                Add Resource
+                            </Button>
+                            <OptionsDD triggerRefresh={this.getResources}/>
+                        </ButtonGroup>
                             
                         <SearchBar
                         setTextFilter={this.setTextFilter}

@@ -1,4 +1,3 @@
-import 'antd'
 import React from 'react'
 import { Menu, Icon, Layout } from 'antd'
 import SubMenu from 'antd/lib/menu/SubMenu'
@@ -6,8 +5,6 @@ import * as actions from '../store/actions/auth'
 import { NavLink, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { succ_logout } from './shared/messages'
-import axios from 'axios'
-import { inf_set_sort, succ_set_sort, err_set_sort } from './shared/messages'
 
 const { Header } = Layout;
 
@@ -37,29 +34,6 @@ class CustomHeader extends React.Component{
                 return fallbackSelection;
     }
 
-    setSort = (type) => {
-        inf_set_sort();
-
-        axios.patch("http://localhost:8000/api/options/", {
-
-            sort:type
-
-        },{
-            headers:{
-                "Authorization": "Token " + localStorage.getItem('token'),
-            }
-        })
-        .then(res => {
-            succ_set_sort();
-        })
-        .catch(err => {
-            console.log(err);
-            err_set_sort();
-        });
-    }
-
-
-
     render(){
         return (
             <Header className="header">
@@ -82,41 +56,6 @@ class CustomHeader extends React.Component{
                         <NavLink to='/'></NavLink>
                     </Menu.Item>
                     
-                    <SubMenu
-                    title={
-                        <span>
-                            <Icon type="setting"/>
-                            Options
-                        </span>
-                    }
-                    >
-
-                    
-                        <SubMenu
-                        title={
-                            <span>
-                                <Icon type="swap"/>
-                                Sort
-                            </span>
-                        }
-                        >
-
-                            <Menu.Item key="sort_title_asc" onClick={() => {this.setSort("AAS")}}>
-                                <Icon type="sort-ascending" /> Title - Ascending
-                            </Menu.Item>
-                            <Menu.Item key="sort_title_desc" onClick={() => {this.setSort("ADE")}}>
-                                <Icon type="sort-descending" />Title - Descending
-                            </Menu.Item>
-                            <Menu.Item key="sort_time_asc" onClick={() => {this.setSort("TAS")}}>
-                                <Icon type="to-top" style={{transform:"rotate(180deg)"}}/>Time - Ascending (now - before)
-                            </Menu.Item>
-                            <Menu.Item key="sort_time_desc" onClick={() => {this.setSort("TDE")}}>
-                                <Icon type="to-top" />Time - Descending (before - now)
-                            </Menu.Item>
-                        </SubMenu>
-
-                    </SubMenu>
-
                     <Menu.Item key="trash">
                         <Icon type="delete"/>
                         Trash
