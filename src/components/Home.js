@@ -37,11 +37,11 @@ export default class Home extends Component {
         })
         .then(res => {
             this.setState({ resources:res.data });
-            callback();
+            if(callback) callback();
         })
         .catch(err => {
             console.log(err);
-            callback();
+            if(callback) callback();
         });
     }
 

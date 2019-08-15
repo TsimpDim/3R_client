@@ -22,7 +22,7 @@ export default class OptionsDD extends React.Component {
             }
         })
         .then(res => {
-            this.props.triggerRefresh(()=>{});
+            this.props.triggerRefresh();
             succ_set_sort();
         })
         .catch(err => {
